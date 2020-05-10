@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, FlatList } from "react-native";
 import { Card } from "react-native-paper";
 
 const Home = () => {
@@ -8,12 +8,20 @@ const Home = () => {
     { id: 2, name: "William Sierra", position: "React-native Developer" },
     { id: 3, name: "William Sierra", position: "React-native Developer" },
     { id: 4, name: "William Sierra", position: "React-native Developer" },
+    { id: 5, name: "William Sierra", position: "React-native Developer" },
+    { id: 6, name: "William Sierra", position: "React-native Developer" },
+    { id: 7, name: "William Sierra", position: "React-native Developer" },
+    { id: 8, name: "William Sierra", position: "React-native Developer" },
+    { id: 9, name: "William Sierra", position: "React-native Developer" },
+    { id: 10, name: "William Sierra", position: "React-native Developer" },
+    { id: 11, name: "William Sierra", position: "React-native Developer" },
+    { id: 12, name: "William Sierra", position: "React-native Developer" },
   ];
 
-  const renderList = data.map((item) => {
+  const renderList = (item) => {
     return (
-      <Card style={styles.myCard} key={"itemNo" + item.id}>
-        <View  style={styles.cardView}>
+      <Card style={styles.myCard}>
+        <View style={styles.cardView}>
           <Image
             style={styles.imageView}
             source={{
@@ -28,8 +36,18 @@ const Home = () => {
         </View>
       </Card>
     );
-  });
-  return <View>{renderList}</View>;
+  };
+  return (
+    <View>
+      <FlatList
+        data={data}
+        keyExtractor={item=>`${item.id}`}
+        renderItem={({ item }) => {
+         return renderList(item);
+        }}
+      />
+    </View>
+  );
 };
 export default Home;
 
