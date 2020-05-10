@@ -2,25 +2,25 @@ import React from "react";
 import { StyleSheet, Text, View, Image, FlatList } from "react-native";
 import { Card, FAB } from "react-native-paper";
 
-const Home = () => {
+const Home = ({navigation}) => {
   const data = [
     { id: 1, name: "William Sierra", position: "React-native Developer" },
     { id: 2, name: "William Sierra", position: "React-native Developer" },
-    { id: 3, name: "William Sierra", position: "React-native Developer" },
-    { id: 4, name: "William Sierra", position: "React-native Developer" },
-    { id: 5, name: "William Sierra", position: "React-native Developer" },
-    { id: 6, name: "William Sierra", position: "React-native Developer" },
-    { id: 7, name: "William Sierra", position: "React-native Developer" },
-    { id: 8, name: "William Sierra", position: "React-native Developer" },
-    { id: 9, name: "William Sierra", position: "React-native Developer" },
-    { id: 10, name: "William Sierra", position: "React-native Developer" },
-    { id: 11, name: "William Sierra", position: "React-native Developer" },
-    { id: 12, name: "William Sierra", position: "React-native Developer" },
+    // { id: 3, name: "William Sierra", position: "React-native Developer" },
+    // { id: 4, name: "William Sierra", position: "React-native Developer" },
+    // { id: 5, name: "William Sierra", position: "React-native Developer" },
+    // { id: 6, name: "William Sierra", position: "React-native Developer" },
+    // { id: 7, name: "William Sierra", position: "React-native Developer" },
+    // { id: 8, name: "William Sierra", position: "React-native Developer" },
+    // { id: 9, name: "William Sierra", position: "React-native Developer" },
+    // { id: 10, name: "William Sierra", position: "React-native Developer" },
+    // { id: 11, name: "William Sierra", position: "React-native Developer" },
+    // { id: 12, name: "William Sierra", position: "React-native Developer" },
   ];
 
   const renderList = (item) => {
     return (
-      <Card style={styles.myCard}>
+      <Card style={styles.myCard} onPress={()=>navigation.navigate('Profile')}>
         <View style={styles.cardView}>
           <Image
             style={styles.imageView}
@@ -38,7 +38,7 @@ const Home = () => {
     );
   };
   return (
-    <View>
+    <View style={{flex:1}}>
       <FlatList
         data={data}
         keyExtractor={(item) => `${item.id}`}
@@ -46,11 +46,11 @@ const Home = () => {
           return renderList(item);
         }}
       />
-      <FAB
+      <FAB onPress={()=>navigation.navigate('Create')}
         style={styles.fab}
         small={false}
         icon="plus"
-        onPress={() => alert("Pressed")}
+       
       />
     </View>
   );

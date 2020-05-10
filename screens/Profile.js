@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import React from "react";
 import { StyleSheet, Text, View, Image,Linking ,Platform} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
