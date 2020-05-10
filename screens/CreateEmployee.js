@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Modal } from "react-native";
+import { StyleSheet, Text, View, Modal,Alert } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 
 import * as ImagePicker from 'expo-image-picker';
-import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 
 const CreateEmployee = () => {
@@ -13,6 +12,37 @@ const CreateEmployee = () => {
   const [salary, setSalary] = useState("");
   const [picture, setPicture] = useState("");
   const [modal, setModal] = useState(false);
+
+
+  const pickFromGallery =async ()=>{
+    const {granted} = await Permissions.askAsync(Permissions.CAMERA_ROLL)
+    if(granted){
+      let data = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes:ImagePicker.MediaTypeOptions.Images,
+        allowsEditing:true,
+        aspect:[1,1],
+        quality:0.5
+      })
+      console.log(data)
+    }else{
+      Alert.alert("You Need to give permission !")
+    }
+  }
+
+  const pickFromCamera =async ()=>{
+    const {granted} = await Permissions.askAsync(Permissions.CAMERA)
+    if(granted){
+      let data = await ImagePicker.launchCameraAsync({
+        mediaTypes:ImagePicker.MediaTypeOptions.Images,
+        allowsEditing:true,
+        aspect:[1,1],
+        quality:0.5
+      })
+      console.log(data)
+    }else{
+      Alert.alert("You Need to give permission !")
+    }
+  }
   return (
     <View style={styles.root}>
       <TextInput
@@ -84,14 +114,14 @@ const CreateEmployee = () => {
             <Button
               icon="camera"
               mode="contained"
-              onPress={() => setModal(false)}
+              onPress={() => pickFromCamera()}
             >
               Camera
             </Button>
             <Button
               icon="image-area"
               mode="contained"
-              onPress={() => setModal(false)}
+              onPress={() => pickFromGallery()}
             >
               Gallery
             </Button>
