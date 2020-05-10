@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View, Modal } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 
+import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
+import * as Permissions from 'expo-permissions';
+
 const CreateEmployee = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
