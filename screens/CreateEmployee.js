@@ -44,6 +44,7 @@ const CreateEmployee = ({ navigation, route }) => {
   const [picture, setPicture] = useState(getDetails("picture"));
   const [position, setPosition] = useState(getDetails("position"));
   const [modal, setModal] = useState(false);
+  const [enableShift, setEnableShift] = useState(false);
 
   const submitData = () => {
     fetch("http://cc5a033e.ngrok.io/send-data", {
@@ -75,7 +76,7 @@ const CreateEmployee = ({ navigation, route }) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id:route.params._id,
+        id: route.params._id,
         name,
         phone,
         email,
@@ -155,8 +156,8 @@ const CreateEmployee = ({ navigation, route }) => {
   };
 
   return (
-    <View style={styles.root}>
-      <KeyboardAvoidingView behavior="position">
+    <KeyboardAvoidingView behavior="position" style={styles.root} enabled={enableShift}>
+      <View style={styles.root}>
         <TextInput
           label="Name"
           theme={theme}
@@ -180,6 +181,7 @@ const CreateEmployee = ({ navigation, route }) => {
           style={styles.inputStyle}
           value={email}
           mode="outlined"
+          onFocus={()=>setEnableShift(true)}
           onChangeText={(text) => setEmail(text)}
         />
         <TextInput
@@ -188,6 +190,7 @@ const CreateEmployee = ({ navigation, route }) => {
           theme={theme}
           style={styles.inputStyle}
           value={salary}
+          onFocus={()=>setEnableShift(true)}
           mode="outlined"
           onChangeText={(text) => setSalary(text)}
         />
@@ -196,6 +199,7 @@ const CreateEmployee = ({ navigation, route }) => {
           theme={theme}
           style={styles.inputStyle}
           value={position}
+          onFocus={()=>setEnableShift(true)}
           mode="outlined"
           onChangeText={(text) => setPosition(text)}
         />
@@ -255,8 +259,8 @@ const CreateEmployee = ({ navigation, route }) => {
             <Button onPress={() => setModal(false)}>cancel</Button>
           </View>
         </Modal>
-      </KeyboardAvoidingView>
-    </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -268,7 +272,7 @@ const theme = {
 export default CreateEmployee;
 const styles = StyleSheet.create({
   root: {
-    flex: 1,
+    // flex: 1,
   },
   inputStyle: {
     margin: 5,
