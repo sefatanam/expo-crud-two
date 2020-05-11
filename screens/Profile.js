@@ -1,13 +1,21 @@
 import "react-native-gesture-handler";
 import React from "react";
-import { StyleSheet, Text, View, Image, Linking, Platform } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Linking,
+  Platform,
+  Alert,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Title, Card, Button } from "react-native-paper";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
 
 const Profile = (props) => {
   const {
-    id,
+    _id,
     name,
     salary,
     phone,
@@ -15,13 +23,36 @@ const Profile = (props) => {
     position,
     email,
   } = props.route.params.item;
+
   const openDial = () => {
     if (Platform.OS == "android") {
-      Linking.openURL("tel:12345");
+      Linking.openURL(`tel:${phone}`);
     } else {
-      Linking.openURL("telprompt:123456");
+      Linking.openURL(`telprompt:${phone}`);
     }
   };
+
+
+  const deleteEmployee = () => {
+    fetch("https://cc5a033e.ngrok.io/delete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: _id,
+      }),
+    })
+      .then((res) => res.json())
+      .then((del) => {
+        Alert.alert(`${del.name} deleted`);
+        props.navigation.navigate("Home");
+      })
+      .catch((err) => {
+        Alert.alert("Something went wrong");
+      });
+  };
+
   return (
     <View style={styles.root}>
       <LinearGradient
@@ -43,7 +74,7 @@ const Profile = (props) => {
 
       <Card
         style={styles.myCard}
-        onPress={() => Linking.openURL("mailto:sefatanam@gmail.com")}
+        onPress={() => Linking.openURL(`mailto:${email}`)}
       >
         <View style={styles.cardContent}>
           <MaterialIcons name="email" size={32} color="#6420ee" />
@@ -69,17 +100,27 @@ const Profile = (props) => {
           style={styles.inputStyle}
           icon="account-edit"
           mode="contained"
-          onPress={() => alert("edit")}
+          onPress={() => {
+            props.navigation.navigate("Create", {
+              _id,
+              name,
+              salary,
+              phone,
+              picture,
+              position,
+              email,
+            });
+          }}
         >
-          Update
+          Edit
         </Button>
         <Button
           style={styles.inputStyle}
           icon="account-edit"
           mode="contained"
-          onPress={() => alert("delete")}
+          onPress={() => deleteEmployee()}
         >
-          Delete{" "}
+          Delete
         </Button>
       </View>
     </View>

@@ -1,40 +1,64 @@
-import React from "react";
-import { StyleSheet, Text, View, Image, FlatList } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  FlatList,
+
+  Alert,
+} from "react-native";
 import { Card, FAB } from "react-native-paper";
 
 const Home = ({ navigation }) => {
-  const data = [
-    {
-      id: "1",
-      name: "William Sierra",
-      email: "William@email.com",
-      salary: "112.7k",
-      phone: "6464565436",
-      position: "React-native Developer",
-      picture:
-        "http://res.cloudinary.com/chotoopusku/image/upload/v1589186629/wycve9eh2wkvjhzckfiy.jpg",
-    },
-    {
-      id: "2",
-      name: "Madison Kyth",
-      email: "Madison@email.com",
-      salary: "89.7k",
-      phone: "6464565436",
-      position: "Angular Developer",
-      picture:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80",
-    },
-    {
-      id: "3",
-      name: "Json Kathiren ",
-      email: "Kathiren@email.com",
-      salary: "65.7k",
-      phone: "6464565436",
-      position: "Angular Developer",
-      picture:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80",
-    },
-  ];
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchdata = () => {
+    fetch("https://cc5a033e.ngrok.io/")
+      .then((res) => res.json())
+      .then((result) => {
+        setData(result);
+        setLoading(false);
+      })
+      .catch((err) => Alert.alert("Something went wrong"));
+  };
+  useEffect(() => {
+    fetchdata();
+  }, []);
+
+  // const data = [
+  //   {
+  //     _id: "1",
+  //     name: "William Sierra",
+  //     email: "William@email.com",
+  //     salary: "112.7k",
+  //     phone: "6464565436",
+  //     position: "React-native Developer",
+  //     picture:
+  //       "http://res.cloudinary.com/chotoopusku/image/upload/v1589186629/wycve9eh2wkvjhzckfiy.jpg",
+  //   },
+  //   {
+  //     _id: "2",
+  //     name: "Madison Kyth",
+  //     email: "Madison@email.com",
+  //     salary: "89.7k",
+  //     phone: "6464565436",
+  //     position: "Angular Developer",
+  //     picture:
+  //       "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80",
+  //   },
+  //   {
+  //     _id: "3",
+  //     name: "Json Kathiren ",
+  //     email: "Kathiren@email.com",
+  //     salary: "65.7k",
+  //     phone: "6464565436",
+  //     position: "Angular Developer",
+  //     picture:
+  //       "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80",
+  //   },
+  // ];
 
   const renderList = (item) => {
     return (
@@ -46,8 +70,7 @@ const Home = ({ navigation }) => {
           <Image
             style={styles.imageView}
             source={{
-              uri:
-               item.picture,
+              uri: item.picture,
             }}
           />
           <View style={{ marginLeft: 10 }}>
@@ -62,11 +85,14 @@ const Home = ({ navigation }) => {
     <View style={{ flex: 1 }}>
       <FlatList
         data={data}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         renderItem={({ item }) => {
           return renderList(item);
         }}
+        onRefresh={()=>fetchdata()}
+        refreshing={loading}
       />
+
       <FAB
         onPress={() => navigation.navigate("Create")}
         style={styles.fab}

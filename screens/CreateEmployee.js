@@ -1,17 +1,52 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Modal, Alert } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Modal,
+  Alert,
+  KeyboardAvoidingView,
+} from "react-native";
 import { TextInput, Button } from "react-native-paper";
 
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 
-const CreateEmployee = () => {
+const CreateEmployee = ({ navigation, route }) => {
+  if (route.params) {
+    console.log(route.params);
+  }
+
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [salary, setSalary] = useState("");
   const [picture, setPicture] = useState("");
+  const [position, setPosition] = useState("");
   const [modal, setModal] = useState(false);
+
+  const submitData = () => {
+    fetch("http://cc5a033e.ngrok.io/send-data", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        phone,
+        email,
+        salary,
+        picture,
+        position,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        Alert.alert(`${data.name} saved successfully`);
+        navigation.navigate("Home");
+      })
+      .catch((err) => Alert.alert("Something went wrong"));
+  };
 
   const pickFromGallery = async () => {
     const { granted } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -72,94 +107,106 @@ const CreateEmployee = () => {
         console.log(data);
         setPicture(data.url);
         setModal(false);
-      });
+      })
+      .catch((err) => Alert.alert("Something went wrong"));
   };
+
   return (
     <View style={styles.root}>
-      <TextInput
+      <KeyboardAvoidingView behavior="position">
+        <TextInput
+          label="Name"
+          theme={theme}
+          style={styles.inputStyle}
+          value={name}
+          mode="outlined"
+          onChangeText={(text) => setName(text)}
+        />
+        <TextInput
+          label="Phone"
+          theme={theme}
+          style={styles.inputStyle}
+          value={phone}
+          mode="outlined"
+          keyboardType="number-pad"
+          onChangeText={(text) => setPhone(text)}
+        />
+        <TextInput
+          label="Email"
+          theme={theme}
+          style={styles.inputStyle}
+          value={email}
+          mode="outlined"
+          onChangeText={(text) => setEmail(text)}
+        />
+        <TextInput
+          label="Salary"
+          keyboardType="number-pad"
+          theme={theme}
+          style={styles.inputStyle}
+          value={salary}
+          mode="outlined"
+          onChangeText={(text) => setSalary(text)}
+        />
+        <TextInput
+          label="Position"
+          theme={theme}
+          style={styles.inputStyle}
+          value={position}
+          mode="outlined"
+          onChangeText={(text) => setPosition(text)}
+        />
+        {/* <TextInput
         label="Name"
         theme={theme}
         style={styles.inputStyle}
         value={name}
         mode="outlined"
         onChangeText={(text) => setName()}
-      />
-      <TextInput
-        label="Phone"
-        theme={theme}
-        style={styles.inputStyle}
-        value={phone}
-        mode="outlined"
-        keyboardType="number-pad"
-        onChangeText={(text) => setPhone()}
-      />
-      <TextInput
-        label="Email"
-        theme={theme}
-        style={styles.inputStyle}
-        value={email}
-        mode="outlined"
-        onChangeText={(text) => setEmail()}
-      />
-      <TextInput
-        label="Salary"
-        keyboardType="number-pad"
-        theme={theme}
-        style={styles.inputStyle}
-        value={salary}
-        mode="outlined"
-        onChangeText={(text) => setSalary()}
-      />
-      <TextInput
-        label="Name"
-        theme={theme}
-        style={styles.inputStyle}
-        value={name}
-        mode="outlined"
-        onChangeText={(text) => setName()}
-      />
-      <Button
-        style={styles.inputStyle}
-        icon={picture == "" ? "upload" : "check"}
-        mode="contained"
-        onPress={() => setModal(true)}
-      >
-        Upload Image
-      </Button>
-      <Button
-        style={styles.inputStyle}
-        icon="upload"
-        mode="contained"
-        onPress={() => console.log("Saved")}
-      >
-        Save
-      </Button>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modal}
-        onRequestClose={() => setModal(false)}
-      >
-        <View style={styles.modalView}>
-          <View style={styles.modalButtonView}>
-            <Button
-              icon="camera"
-              mode="contained"
-              onPress={() => pickFromCamera()}
-            >
-              Camera
-            </Button>
-            <Button
-              icon="image-area"
-              mode="contained"
-              onPress={() => pickFromGallery()}
-            >
-              Gallery
-            </Button>
+      /> */}
+        <Button
+          style={styles.inputStyle}
+          icon={picture == "" ? "upload" : "check"}
+          mode="contained"
+          onPress={() => setModal(true)}
+        >
+          Upload Image
+        </Button>
+        <Button
+          style={styles.inputStyle}
+          icon="upload"
+          mode="contained"
+          onPress={() => submitData()}
+        >
+          Save
+        </Button>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modal}
+          onRequestClose={() => setModal(false)}
+        >
+          <View style={styles.modalView}>
+            <View style={styles.modalButtonView}>
+              <Button
+                icon="camera"
+                mode="contained"
+                onPress={() => pickFromCamera()}
+              >
+                Camera
+              </Button>
+              <Button
+                icon="image-area"
+                mode="contained"
+                onPress={() => pickFromGallery()}
+              >
+                Gallery
+              </Button>
+            </View>
+            <Button onPress={() => setModal(false)}>cancel</Button>
           </View>
-          <Button onPress={() => setModal(false)}>cancel</Button>
-        </View>
-      </Modal>
+        </Modal>
+      </KeyboardAvoidingView>
     </View>
   );
 };
