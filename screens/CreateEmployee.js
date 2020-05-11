@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Modal,Alert } from "react-native";
+import { StyleSheet, Text, View, Modal, Alert } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 
-import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
+import * as ImagePicker from "expo-image-picker";
+import * as Permissions from "expo-permissions";
 
 const CreateEmployee = () => {
   const [name, setName] = useState("");
@@ -13,36 +13,67 @@ const CreateEmployee = () => {
   const [picture, setPicture] = useState("");
   const [modal, setModal] = useState(false);
 
-
-  const pickFromGallery =async ()=>{
-    const {granted} = await Permissions.askAsync(Permissions.CAMERA_ROLL)
-    if(granted){
+  const pickFromGallery = async () => {
+    const { granted } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (granted) {
       let data = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes:ImagePicker.MediaTypeOptions.Images,
-        allowsEditing:true,
-        aspect:[1,1],
-        quality:0.5
-      })
-      console.log(data)
-    }else{
-      Alert.alert("You Need to give permission !")
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.5,
+      });
+      if (!data.cancelled) {
+        let newfile = {
+          uri: data.uri,
+          type: `test/${data.uri.split(".")[1]}`,
+          name: `test.${data.uri.split(".")[1]}`,
+        };
+        handleUpload(newfile);
+      }
+    } else {
+      Alert.alert("You Need to give permission !");
     }
-  }
+  };
 
-  const pickFromCamera =async ()=>{
-    const {granted} = await Permissions.askAsync(Permissions.CAMERA)
-    if(granted){
+  const pickFromCamera = async () => {
+    const { granted } = await Permissions.askAsync(Permissions.CAMERA);
+    if (granted) {
       let data = await ImagePicker.launchCameraAsync({
-        mediaTypes:ImagePicker.MediaTypeOptions.Images,
-        allowsEditing:true,
-        aspect:[1,1],
-        quality:0.5
-      })
-      console.log(data)
-    }else{
-      Alert.alert("You Need to give permission !")
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.5,
+      });
+      if (!data.cancelled) {
+        let newfile = {
+          uri: data.uri,
+          type: `test/${data.uri.split(".")[1]}`,
+          name: `test.${data.uri.split(".")[1]}`,
+        };
+        handleUpload(newfile);
+      }
+    } else {
+      Alert.alert("You Need to give permission !");
     }
-  }
+  };
+
+  const handleUpload = (image) => {
+    const data = new FormData();
+    data.append("file", image);
+    data.append("upload_preset", "crudRevu");
+    data.append("cloud_name", "chotoopusku");
+
+    fetch("https://api.cloudinary.com/v1_1/chotoopusku/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setPicture(data.url);
+        setModal(false);
+      });
+  };
   return (
     <View style={styles.root}>
       <TextInput
@@ -89,7 +120,7 @@ const CreateEmployee = () => {
       />
       <Button
         style={styles.inputStyle}
-        icon="upload"
+        icon={picture == "" ? "upload" : "check"}
         mode="contained"
         onPress={() => setModal(true)}
       >
@@ -99,7 +130,7 @@ const CreateEmployee = () => {
         style={styles.inputStyle}
         icon="upload"
         mode="contained"
-        onPress={() => console.log('Saved')}
+        onPress={() => console.log("Saved")}
       >
         Save
       </Button>

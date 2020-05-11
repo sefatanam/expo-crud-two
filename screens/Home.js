@@ -12,7 +12,7 @@ const Home = ({ navigation }) => {
       phone: "6464565436",
       position: "React-native Developer",
       picture:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80",
+        "http://res.cloudinary.com/chotoopusku/image/upload/v1589186629/wycve9eh2wkvjhzckfiy.jpg",
     },
     {
       id: "2",
@@ -47,7 +47,7 @@ const Home = ({ navigation }) => {
             style={styles.imageView}
             source={{
               uri:
-                "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80",
+               item.picture,
             }}
           />
           <View style={{ marginLeft: 10 }}>
