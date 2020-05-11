@@ -1,25 +1,28 @@
 import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  FlatList,
-
-  Alert,
-} from "react-native";
+import { StyleSheet, Text, View, Image, FlatList, Alert } from "react-native";
 import { Card, FAB } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
 
 const Home = ({ navigation }) => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const [data, setData] = useState([]);
+  // const [loading, setLoading] = useState(true);
+
+  const dispatch = useDispatch();
+  const { data, loading } = useSelector((state) => {
+    return state;
+  });
+
+
 
   const fetchdata = () => {
     fetch("https://cc5a033e.ngrok.io/")
       .then((res) => res.json())
-      .then((result) => {
-        setData(result);
-        setLoading(false);
+      .then((results) => {
+
+        dispatch({type:"ADD_DATA",payload:results})
+        dispatch({type:"SET_LOADING",payload:false})
+        // setData(result);
+        // setLoading(false);
       })
       .catch((err) => Alert.alert("Something went wrong"));
   };
@@ -89,7 +92,7 @@ const Home = ({ navigation }) => {
         renderItem={({ item }) => {
           return renderList(item);
         }}
-        onRefresh={()=>fetchdata()}
+        onRefresh={() => fetchdata()}
         refreshing={loading}
       />
 

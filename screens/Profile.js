@@ -132,10 +132,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   imageView: {
-    height: 120,
-    width: 120,
-    borderRadius: 120 / 2,
-    marginTop: -50,
+    height: 140,
+    width: 140,
+    borderRadius: 140 / 2,
+    marginTop: -60,
   },
   imageContainer: {
     alignItems: "center",

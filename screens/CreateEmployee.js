@@ -37,6 +37,7 @@ const CreateEmployee = ({ navigation, route }) => {
     }
   };
 
+ 
   const [name, setName] = useState(getDetails("name"));
   const [phone, setPhone] = useState(getDetails("phone"));
   const [email, setEmail] = useState(getDetails("email"));
@@ -205,8 +206,9 @@ const CreateEmployee = ({ navigation, route }) => {
         />
 
         <Button
+        theme={buttonTheme}
           style={styles.inputStyle}
-          icon={picture == "" ? "upload" : "check"}
+          icon={picture == undefined ? "upload" : "check"}
           mode="contained"
           onPress={() => setModal(true)}
         >
@@ -225,7 +227,7 @@ const CreateEmployee = ({ navigation, route }) => {
         ) : (
           <Button
             style={styles.inputStyle}
-            icon="upload"
+            // icon="upload"
             mode="contained"
             onPress={() => submitData()}
           >
@@ -267,6 +269,11 @@ const CreateEmployee = ({ navigation, route }) => {
 const theme = {
   colors: {
     primary: "#6420ee",
+  },
+};
+const buttonTheme = {
+  colors: {
+    primary: "#fff",
   },
 };
 export default CreateEmployee;
