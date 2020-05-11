@@ -8,21 +8,41 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { TextInput, Button } from "react-native-paper";
-
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 
 const CreateEmployee = ({ navigation, route }) => {
-  if (route.params) {
-    console.log(route.params);
-  }
+  const getDetails = (type) => {
+    if (route.params) {
+      switch (type) {
+        case "name": {
+          return route.params.name;
+        }
+        case "position": {
+          return route.params.position;
+        }
+        case "email": {
+          return route.params.email;
+        }
+        case "salary": {
+          return route.params.salary;
+        }
+        case "picture": {
+          return route.params.picture;
+        }
+        case "phone": {
+          return route.params.phone;
+        }
+      }
+    }
+  };
 
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [salary, setSalary] = useState("");
-  const [picture, setPicture] = useState("");
-  const [position, setPosition] = useState("");
+  const [name, setName] = useState(getDetails("name"));
+  const [phone, setPhone] = useState(getDetails("phone"));
+  const [email, setEmail] = useState(getDetails("email"));
+  const [salary, setSalary] = useState(getDetails("salary"));
+  const [picture, setPicture] = useState(getDetails("picture"));
+  const [position, setPosition] = useState(getDetails("position"));
   const [modal, setModal] = useState(false);
 
   const submitData = () => {
@@ -48,6 +68,29 @@ const CreateEmployee = ({ navigation, route }) => {
       .catch((err) => Alert.alert("Something went wrong"));
   };
 
+  const updateData = () => {
+    fetch("http://cc5a033e.ngrok.io/update", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id:route.params._id,
+        name,
+        phone,
+        email,
+        salary,
+        picture,
+        position,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        Alert.alert(`${data.name} update successfully`);
+        navigation.navigate("Home");
+      })
+      .catch((err) => Alert.alert("Something went wrong"));
+  };
   const pickFromGallery = async () => {
     const { granted } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     if (granted) {
@@ -156,14 +199,7 @@ const CreateEmployee = ({ navigation, route }) => {
           mode="outlined"
           onChangeText={(text) => setPosition(text)}
         />
-        {/* <TextInput
-        label="Name"
-        theme={theme}
-        style={styles.inputStyle}
-        value={name}
-        mode="outlined"
-        onChangeText={(text) => setName()}
-      /> */}
+
         <Button
           style={styles.inputStyle}
           icon={picture == "" ? "upload" : "check"}
@@ -172,14 +208,27 @@ const CreateEmployee = ({ navigation, route }) => {
         >
           Upload Image
         </Button>
-        <Button
-          style={styles.inputStyle}
-          icon="upload"
-          mode="contained"
-          onPress={() => submitData()}
-        >
-          Save
-        </Button>
+
+        {route.params ? (
+          <Button
+            style={styles.inputStyle}
+            icon="upload"
+            mode="contained"
+            onPress={() => updateData()}
+          >
+            Update
+          </Button>
+        ) : (
+          <Button
+            style={styles.inputStyle}
+            icon="upload"
+            mode="contained"
+            onPress={() => submitData()}
+          >
+            Save
+          </Button>
+        )}
+
         <Modal
           animationType="fade"
           transparent={true}
